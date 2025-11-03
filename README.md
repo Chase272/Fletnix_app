@@ -1,7 +1,8 @@
 # 🎬 Fletnix
 
 **Fletnix** is a web-based application that provides structured, searchable access to textual data about Netflix shows and movies.  
-Users can explore titles, filter by type or genre, and maintain a personal watchlist — all from a clean, responsive interface.
+
+
 You can look at https://fletnix-frontend-three.vercel.app/
 ---
 
