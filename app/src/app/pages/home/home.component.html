@@ -1,0 +1,185 @@
+<!-- Navbar -->
+<nav
+  class="bg-[#141414]/95 border-b border-red-700/50 shadow-lg sticky top-0 z-50 flex justify-between items-center px-[5%] py-4"
+>
+  <div class="text-3xl font-black text-[#e50914] tracking-wide">FLETNIX</div>
+
+  <div class="flex items-center gap-8">
+    <div class="flex items-center gap-3 text-white/90">
+      <div
+        class="w-8 h-8 rounded bg-[#e50914] flex items-center justify-center font-bold text-sm"
+      >
+        {{initial_letter}}
+      </div>
+    </div>
+    <button
+      (click) = "logout()"
+      class="border border-white/50 text-white px-4 py-2 rounded hover:border-white hover:bg-white/10 transition"
+    >
+      Logout
+    </button>
+  </div>
+</nav>
+
+<!-- Header -->
+<section class="bg-[#141414] px-[5%] py-10 border-b border-white/10">
+  <h1 class="text-3xl font-bold mb-2 text-white">Browse All Content</h1>
+  <p class="text-white/70 text-lg mb-1">
+    Search and filter through thousands of movies and TV shows
+  </p>
+  <p class="text-white/50 text-sm mt-1">Browsing out of 8,807 titles</p>
+</section>
+<!-- Error Banner -->
+<div
+  *ngIf="error"
+  class="bg-[#b91c1c]/80 border border-red-700 text-white px-6 py-3 text-center font-medium"
+>
+  Whoops we had a fault.
+  <p class="text-xs">Details : {{ error }}</p>
+</div>
+
+<!-- Search and Filters -->
+<section
+  class="bg-[#141414] border-b border-white/10 px-[5%] py-6 sticky top-[72px] backdrop-blur-sm z-40"
+>
+  <div class="flex flex-col md:flex-row gap-4 mb-6">
+    <div class="relative w-full md:max-w-xl">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"
+        >🔍</span
+      >
+      <input
+        type="text"
+        placeholder="Search by title or cast"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="w-full bg-[#1b1b1b] border border-white/20 rounded px-10 py-3 text-white placeholder-white/50 focus:bg-[#222] focus:border-white outline-none transition"
+      />
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <span class="text-white/70 text-sm font-semibold">Type:</span>
+    <div class="flex gap-2 bg-[#1b1b1b] p-1 rounded">
+      <button
+        (click)="filterByType('All')"
+        [ngClass]="{
+      'bg-[#e50914] text-white': selectedType === 'All',
+      'text-white/70 hover:bg-[#e50914]/70': selectedType !== 'All'
+    }"
+        class="px-4 py-2 rounded text-white bg-[#e50914] text-sm font-medium"
+      >
+        All
+      </button>
+      <button 
+      (click)="filterByType('Movie')"
+          [ngClass]="{
+      'bg-[#e50914] text-white': selectedType === 'Movie',
+      'text-white/70 hover:bg-[#e50914]/70': selectedType !== 'Movie'
+    }"
+      class="px-4 py-2 rounded text-white/70 hover:bg-[#e50914]/70">
+        Movies
+      </button>
+      <button 
+      (click)="filterByType('TV')"
+    [ngClass]="{
+      'bg-[#e50914] text-white': selectedType === 'TV',
+      'text-white/70 hover:bg-[#e50914]/70': selectedType !== 'TV'
+    }"
+      class="px-4 py-2 rounded text-white/70 hover:bg-[#e50914]/70">
+        TV Shows
+      </button>
+    </div>
+
+ <span class="text-white/70 text-sm font-semibold">View:</span>
+<div class="flex gap-2 bg-[#1b1b1b] p-1 rounded">
+  <button
+    (click)="toggleWatchlistView()"
+    [ngClass]="{
+      'bg-[#e50914] text-white': showingWatchlist,
+      'text-white/70 hover:bg-[#e50914]/70': !showingWatchlist
+    }"
+    class="px-4 py-2 rounded text-sm font-medium"
+  >
+    My Watchlist
+  </button>
+</div>
+
+  </div>
+</section>
+<!-- Content List -->
+<section class="px-[5%] py-8 bg-[#141414] min-h-screen">
+  <h1 class="text-3xl text-white font-bold mb-8">All Shows</h1>
+
+  <!-- Loading / Not Found -->
+  <div *ngIf="loading" class="text-white/70 text-center py-12">Loading...</div>
+  <div *ngIf="not_found" class="text-white/70 text-center py-12">No Results Found</div>
+
+  <!-- Show Grid -->
+  <div *ngIf="!loading && !not_found" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      *ngFor="let show of shows"
+      [routerLink]="['/details', show.show_id]"
+      class="relative bg-[#1b1b1b] border border-white/10 rounded-xl p-5 cursor-pointer hover:bg-[#222] hover:border-[#e50914] transition"
+    >
+      <!-- Watchlist Indicator -->
+<div *ngIf="isInWatchlist(show)" class="absolute top-0 right-0 bg-[#e50914] text-white text-xs px-2 py-1 rounded-bl">
+  WATCHLIST
+</div>
+
+
+      <!-- Title -->
+      <h2 class="text-xl font-bold text-white mb-2 truncate">
+        {{ show.title }}
+      </h2>
+
+      <!-- Type / Year / Rating -->
+      <p class="text-sm text-gray-400 mb-2">
+        {{ show.type }} | {{ show.release_year }} | {{ show.rating || 'NR' }}
+      </p>
+
+      <!-- Duration -->
+      <p class="text-xs text-gray-500 italic mb-3">
+        {{ show.duration || 'Duration not available' }}
+      </p>
+
+      <!-- Genres -->
+      <div *ngIf="show.listed_in?.length" class="flex flex-wrap gap-2 mb-2">
+        <span
+          *ngFor="let genre of show.listed_in"
+          class="bg-[#2a2a2a] text-gray-300 text-xs px-2 py-1 rounded-full border border-[#333]"
+        >
+          {{ genre }}
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<!-- Pagination -->
+ 
+<section *ngIf="!loading && !not_found" class="flex justify-center items-center gap-4 px-[5%] py-12 border-t border-white/10 bg-[#141414]">
+  <button
+    class="bg-[#333]/80 border border-white/20 text-white px-4 py-2 rounded disabled:opacity-30 hover:bg-[#e50914] hover:border-[#e50914] transition"
+    (click)="previousPage()"
+    [disabled]="page <= 1"
+  >
+    ← Previous
+  </button>
+
+  <div class="bg-[#333]/50 px-4 py-2 rounded font-semibold text-white/90 text-sm">
+    Page {{ page }} of {{ totalPages }}
+  </div>
+
+  <button
+    class="bg-[#333]/80 border border-white/20 text-white px-4 py-2 rounded disabled:opacity-30 hover:bg-[#e50914] hover:border-[#e50914] transition"
+    (click)="nextPage()"
+    [disabled]="page >= totalPages"
+  >
+    Next →
+  </button>
+</section>
+

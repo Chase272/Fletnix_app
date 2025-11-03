@@ -1,0 +1,71 @@
+<div class="min-h-screen flex items-center justify-center bg-[#141414] text-white px-4">
+  <form
+    (ngSubmit)="onLogin()"
+    #loginForm="ngForm"
+    class="bg-[#1b1b1b] border border-white/10 p-8 rounded-xl w-full max-w-md space-y-6 shadow-[0_0_20px_rgba(0,0,0,0.4)]"
+  >
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-[#e50914] tracking-wide">FLETNIX</h1>
+      <p class="text-gray-400 text-sm mt-1">Sign in to continue</p>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Email</label>
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        #emailField="ngModel"
+        placeholder="Enter your email"
+        required
+        email
+        class="w-full p-3 rounded-md bg-[#222] border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914] transition"
+      />
+      <p
+        class="text-red-400 text-xs mt-1"
+        *ngIf="emailField.invalid && emailField.touched"
+      >
+        Enter a valid email
+      </p>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Password</label>
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Enter password"
+        required
+        class="w-full p-3 rounded-md bg-[#222] border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914] transition"
+      />
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      [disabled]="loginForm.invalid"
+      class="w-full py-3 bg-[#e50914] hover:bg-[#f40612] rounded-md text-white font-semibold uppercase tracking-wide transition-all disabled:opacity-50"
+    >
+      Login
+    </button>
+
+    <!-- Register Redirect -->
+    <p class="text-center text-sm text-gray-400">
+      Don’t have an account?
+      <button
+        type="button"
+        (click)="onRegister()"
+        class="text-[#e50914] font-semibold hover:underline"
+      >
+        Register
+      </button>
+    </p>
+
+    <p class="text-center text-yellow-400 mt-2" *ngIf="message">
+      {{ message }}
+    </p>
+  </form>
+</div>
