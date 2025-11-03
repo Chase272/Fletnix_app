@@ -32,8 +32,6 @@ FletNix/
 ├── frontend/ # Angular frontend
 └── README.md # This file
 
-yaml
-Copy code
 
 ---
 
